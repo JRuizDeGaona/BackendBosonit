@@ -53,6 +53,11 @@ public class HolaMundo {
         }
     }
 
+    /**
+     * Método que permite no meter un id, es decir, el parámetro no es obligatorio
+     * @param id parámetro id que pasamos o no
+     * @return Un String que nos especifica si hemos pasado un parámetro o no
+     */
     @GetMapping(value = {"/conid", "/conid/{id}"})
     public String HayId(@PathVariable(required = false) String id) {
         if (id != null) {
