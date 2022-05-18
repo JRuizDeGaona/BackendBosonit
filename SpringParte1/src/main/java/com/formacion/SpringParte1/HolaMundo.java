@@ -17,17 +17,6 @@ public class HolaMundo {
     }
 
     /**
-     * Método que recibe un nombre y devuelve un saludo
-     *
-     * @param nombre nombre de la persona que queremos saludar
-     * @return String que contiene "Hola " + el @param
-     */
-    @GetMapping("/hola/{nombre}")
-    public String HolaNombre(@PathVariable String nombre) {
-        return "Hola " + nombre;
-    }
-
-    /**
      * Método que busca entre todos nuestros trabajadores y nos dice si el id de ese trabajdor existe
      *
      * @param id Identificador del trabajaodr que quermos buscar
