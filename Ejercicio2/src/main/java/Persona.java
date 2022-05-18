@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Persona {
-    private String nombre, poblacion, fichero = "e1.txt";
+    private String nombre, poblacion, fichero = "C:/Users/javier.rdegaona/Desktop/BackendBosonit/Ejercicio2/e1.txt";
     private int edad;
     private BufferedReader br;
     private List<Persona> lista = new ArrayList<Persona>();
