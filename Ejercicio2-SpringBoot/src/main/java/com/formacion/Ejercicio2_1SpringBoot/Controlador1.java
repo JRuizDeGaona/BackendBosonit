@@ -1,4 +1,4 @@
-package com.formacion.Ejercicio2SpringBoot;
+package com.formacion.Ejercicio2_1SpringBoot;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.formacion.Ejercicio2SpringBoot;
+package com.formacion.Ejercicio2_1SpringBoot;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
