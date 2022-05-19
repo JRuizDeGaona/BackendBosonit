@@ -12,7 +12,7 @@ public class HolaMundo {
      * @return Hola Mundo
      */
     @GetMapping("/holamundo")
-    public String HolaMundo() {
+    public String holaMundo() {
         return ("Hola Mundo");
     }
 
@@ -23,7 +23,7 @@ public class HolaMundo {
      * @return Un String especificando si el id existe o no
      */
     @GetMapping("/estrabajador/{id}")
-    public String EsTrabajador(@PathVariable int id) {
+    public String esTrabajador(@PathVariable int id) {
         int[] trabajadores = new int[]{1, 2, 3, 4, 5};
         boolean flag = false;
 
@@ -48,7 +48,7 @@ public class HolaMundo {
      * @return Un String que nos especifica si hemos pasado un parámetro o no
      */
     @GetMapping(value = {"/conid", "/conid/{id}"})
-    public String HayId(@PathVariable(required = false) String id) {
+    public String hayId(@PathVariable(required = false) String id) {
         if (id != null) {
             return "El ID introducido es: "+id;
         } else {
