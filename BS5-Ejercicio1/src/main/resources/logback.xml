@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Configuración de mostrar por Consola -->
+    <appender name="CONSOLA" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <!-- Patrón para mostrar por la consola -->
+            <Pattern>
+                %black(%d{ISO8601}) %highlight(%-5level) [%blue(%t)] %yellow(%C{1.}): %msg%n%throwable
+            </Pattern>
+        </layout>
+    </appender>
+
+    <!-- Configuración del Archivo -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <!-- Nombre del Archivo -->
+        <file>ErrorFile.log</file>
+        <!-- Filtro para meter en el archivo sólo los logs de ERROR -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <!-- Si es error lo acepta -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- Si no lo rechaza -->
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <append>true</append>
+        <!-- Patrón del log de ERROR en el Archivo -->
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} | %-5p | [%thread] %logger{5}:%L - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Todos los logs de nivel WARN o superiores se mostrarán por consola -->
+    <!-- Nivel de LOG para el paquete del proyecto, sobreescribe el LOG del ROOT -->
+    <logger name="com.formacion" level="WARN">
+        <!-- Llamamos a la configuración de consola -->
+        <appender-ref ref="CONSOLA" />
+    </logger>
+
+    <!-- Todos los logs de nivel ERROR se guardarán en un fichero -->
+    <!-- Nivel de LOG por defecto -->
+    <root level="ERROR">
+        <!-- Llamamos a la configuración del fichero -->
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>
