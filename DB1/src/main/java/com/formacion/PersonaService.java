@@ -49,7 +49,7 @@ public class PersonaService {
                 persona.setTermination_date(p.getTermination_date());
                 persona.setActive(p.isActive());
 
-                personaRepositorio.save(persona);
+                personaRepositorio.saveAndFlush(persona);
             }
         });
     }
