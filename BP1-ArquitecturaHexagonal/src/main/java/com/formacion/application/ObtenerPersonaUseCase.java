@@ -38,7 +38,7 @@ public class ObtenerPersonaUseCase implements ObtenerPersonaPort {
         });
 
         if (listaPersonas.isEmpty()) {
-            System.out.println("Sin usuarios con ese nombre");
+            throw new Exception("Sin usuarios con ese nombre");
         }
         return listaPersonas;
     }
@@ -53,7 +53,7 @@ public class ObtenerPersonaUseCase implements ObtenerPersonaPort {
         });
 
         if (listaPersonas.isEmpty()) {
-            System.out.println("No hay usuarios en la base de datos");
+            throw new Exception("No hay usuarios en la base de datos");
         }
         return listaPersonas;
     }

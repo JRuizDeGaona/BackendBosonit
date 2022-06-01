@@ -4,6 +4,8 @@ import com.formacion.infraestructure.dtos.input.PersonaInputDTO;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.springframework.web.server.NotAcceptableStatusException;
+
 import javax.persistence.*;
 import java.util.Date;
 @Table(name = "Persona")
@@ -75,7 +77,7 @@ public class EntityPersona {
         setTermination_date(personaInputDTO.getTermination_date());
     }
 
-    public void actualizarDatos(PersonaInputDTO personaInputDTO) throws Exception {
+    public void actualizarDatos(PersonaInputDTO personaInputDTO) throws NotAcceptableStatusException {
         if (personaInputDTO.getUsuario() != null && personaInputDTO.getUsuario().length() <= 10 && personaInputDTO.getUsuario().length() >= 6) {
             setUsuario(personaInputDTO.getUsuario());
         }
