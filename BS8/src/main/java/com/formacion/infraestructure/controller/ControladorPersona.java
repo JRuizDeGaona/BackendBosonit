@@ -10,7 +10,6 @@ import com.formacion.infraestructure.exception.NotFoundException;
 import com.formacion.infraestructure.exception.UnprocesableException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -68,12 +67,47 @@ public class ControladorPersona {
      * @throws Exception Si no cumple el formato correcto de los datos
      */
     @PostMapping("/addPersona")
-    public PersonaOutputDTO addPersona (@RequestBody @Valid PersonaInputDTO personaInputDTO) throws UnprocesableException{
-        try {
-            PersonaOutputDTO personaOutputDTO = createPersonaPort.addPersona(personaInputDTO);
-            return personaOutputDTO;
-        } catch (UnprocesableException ue){
-            throw new UnprocesableException("Valores no válidos");
+    public PersonaOutputDTO addPersona (@RequestBody PersonaInputDTO personaInputDTO) throws UnprocesableException{
+        checkPersona(personaInputDTO);
+        PersonaOutputDTO personaOutputDTO = createPersonaPort.addPersona(personaInputDTO);
+
+        return personaOutputDTO;
+    }
+
+    /**
+     * Método que nos permite comprobar todas las restricciones a la hora de meter usuarios en la base de datos
+     * @param personaInputDTO PersonaInputDTO con los datos de la persona que quermeos introducir
+     */
+    private void checkPersona(PersonaInputDTO personaInputDTO){
+        if(personaInputDTO == null){
+            throw new UnprocesableException("No se puede introducir una persona sin información");
+        }
+        if (personaInputDTO.getUsuario() == null) {
+            throw new UnprocesableException("El campo Usuario no puede ser nulo");
+        }
+        if (personaInputDTO.getUsuario().length() > 10) {
+            throw new UnprocesableException("El campo Usuario debe tener como máximo 10 caracteres de longitud");
+        }
+        if (personaInputDTO.getUsuario().length() < 6) {
+            throw new UnprocesableException("El campo Usuario debe tener como mínimo 6 caracteres de longitud");
+        }
+        if (personaInputDTO.getPassword() == null) {
+            throw new UnprocesableException("El campo Password no puede ser nulo");
+        }
+        if (personaInputDTO.getName() == null) {
+            throw new UnprocesableException("El campo nombre no puede ser nulo");
+        }
+        if (personaInputDTO.getCompany_email() == null) {
+            throw new UnprocesableException("El campo Company_Email no puede ser nulo");
+        }
+        if (personaInputDTO.getPersonal_email() == null) {
+            throw new UnprocesableException("El campo Personal_Email no puede ser nulo");
+        }
+        if (personaInputDTO.getCity() == null) {
+            throw new UnprocesableException("El campo Ciudad no puede ser nulo");
+        }
+        if (personaInputDTO.getCreated_date() == null) {
+            throw new UnprocesableException("El campo Created-Date no puede ser nulo");
         }
     }
 
@@ -95,7 +129,8 @@ public class ControladorPersona {
      * @throws Exception Si el ID de la persona que hemos pasado no existe
      */
     @PutMapping("/updatePersona/{id_persona}")
-    public PersonaOutputDTO updatePersona (@Valid @PathVariable int id_persona, @RequestBody PersonaInputDTO personaInputDTO) throws NotFoundException {
+    public PersonaOutputDTO updatePersona (@PathVariable int id_persona, @RequestBody PersonaInputDTO personaInputDTO) throws NotFoundException {
+        checkPersona(personaInputDTO);
         return updatePersonaPort.updatePersona(id_persona, personaInputDTO);
     }
 }
