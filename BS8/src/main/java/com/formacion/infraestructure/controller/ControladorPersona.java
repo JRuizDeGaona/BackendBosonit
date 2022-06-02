@@ -82,8 +82,8 @@ public class ControladorPersona {
         if(personaInputDTO == null){
             throw new UnprocesableException("No se puede introducir una persona sin información");
         }
-        if (personaInputDTO.getUsuario() == null) {
-            throw new UnprocesableException("El campo Usuario no puede ser nulo");
+        if (personaInputDTO.getUsuario() == null || personaInputDTO.getUsuario().isBlank()) {
+            throw new UnprocesableException("El campo Usuario no puede ser nulo ni estar vacío");
         }
         if (personaInputDTO.getUsuario().length() > 10) {
             throw new UnprocesableException("El campo Usuario debe tener como máximo 10 caracteres de longitud");
@@ -91,23 +91,23 @@ public class ControladorPersona {
         if (personaInputDTO.getUsuario().length() < 6) {
             throw new UnprocesableException("El campo Usuario debe tener como mínimo 6 caracteres de longitud");
         }
-        if (personaInputDTO.getPassword() == null) {
-            throw new UnprocesableException("El campo Password no puede ser nulo");
+        if (personaInputDTO.getPassword() == null || personaInputDTO.getPassword().isBlank()) {
+            throw new UnprocesableException("El campo Password no puede ser nulo ni estar vacío");
         }
-        if (personaInputDTO.getName() == null) {
-            throw new UnprocesableException("El campo nombre no puede ser nulo");
+        if (personaInputDTO.getName() == null || personaInputDTO.getName().isBlank()) {
+            throw new UnprocesableException("El campo nombre no puede ser nulo ni estar vacío");
         }
-        if (personaInputDTO.getCompany_email() == null) {
-            throw new UnprocesableException("El campo Company_Email no puede ser nulo");
+        if (personaInputDTO.getCompany_email() == null || personaInputDTO.getCompany_email().isBlank()) {
+            throw new UnprocesableException("El campo Company_Email no puede ser nulo ni estar vacío");
         }
-        if (personaInputDTO.getPersonal_email() == null) {
-            throw new UnprocesableException("El campo Personal_Email no puede ser nulo");
+        if (personaInputDTO.getPersonal_email() == null || personaInputDTO.getPersonal_email().isBlank()) {
+            throw new UnprocesableException("El campo Personal_Email no puede ser nulo ni estar vacío");
         }
-        if (personaInputDTO.getCity() == null) {
-            throw new UnprocesableException("El campo Ciudad no puede ser nulo");
+        if (personaInputDTO.getCity() == null || personaInputDTO.getCity().isBlank()) {
+            throw new UnprocesableException("El campo Ciudad no puede ser nulo ni estar vacío");
         }
         if (personaInputDTO.getCreated_date() == null) {
-            throw new UnprocesableException("El campo Created-Date no puede ser nulo");
+            throw new UnprocesableException("El campo Created-Date no puede ser nulo ni estar vacío");
         }
     }
 
