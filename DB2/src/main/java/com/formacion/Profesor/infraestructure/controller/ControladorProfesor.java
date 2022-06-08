@@ -1,58 +1,82 @@
 package com.formacion.Profesor.infraestructure.controller;
 
+import com.formacion.Profesor.application.port.CreateProfesorPort;
+import com.formacion.Profesor.application.port.DeleteProfesorPort;
+import com.formacion.Profesor.application.port.ObtenerProfesorPort;
+import com.formacion.Profesor.application.port.UpdateProfesorPort;
+import com.formacion.Profesor.infraestructure.dtos.input.ProfesorInputDTO;
 import com.formacion.Profesor.infraestructure.dtos.output.ProfesorOutputDTO;
 import com.formacion.Excepciones.NotFoundException;
-import com.formacion.Profesor.domain.Profesor;
-import com.formacion.Profesor.application.ProfesorServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @RestController
-@RequestMapping
+@RequestMapping("/profesor")
 public class ControladorProfesor {
     @Autowired
-    ProfesorServicio profesorServicio;
+    CreateProfesorPort createProfesorPort;
+    @Autowired
+    DeleteProfesorPort deleteProfesor;
+    @Autowired
+    UpdateProfesorPort updateProfesorPort;
+    @Autowired
+    ObtenerProfesorPort obtenerProfesorPort;
 
-    @GetMapping("profesor/buscarId/{id_profesor}")
-    public Optional<Profesor> buscarId(@PathVariable int id_profesor, @RequestParam String outputType){
-        if(outputType==""){
-            outputType="simple";
-        }
-        if(outputType.equals("simple")){
-            Optional<Profesor> profesor = profesorServicio.buscarId(id_profesor);
-            return profesor;
-        }else if(outputType.equals("full")){
-            Optional<Profesor> profesor = profesorServicio.buscarId(id_profesor);
-            return profesor;
-        }else{
-            throw new NotFoundException("No se encuentra una solicitud con ese parametro");
-        }
+    /**
+     * Método para buscar un profesor de la base de datos
+     * @param id_profesor ID del profesor que queremos buscar
+     * @param outputType Forma de mostrar los datos
+     * @return ProfesorOutputDTO con los datos del profesor
+     * @throws NotFoundException Si el ID pasado no existe
+     */
+    @GetMapping("/buscarId/{id_profesor}")
+    public ProfesorOutputDTO buscarId(@PathVariable int id_profesor, @RequestParam (name = "outputType", defaultValue = "simple")String outputType) throws NotFoundException{
+        return obtenerProfesorPort.buscarPorId(id_profesor, outputType);
     }
 
-    @GetMapping("profesor/showAll")
-    public ArrayList mostrarTodo(){
-        ArrayList profesores = profesorServicio.mostrarTodo();
-        return (ArrayList) profesores.stream()
-                .map(i -> new ProfesorOutputDTO((Profesor) i))
-                .collect(Collectors.toList());
+    /**
+     * Método para buscar todos los profesores de la base de datos
+     * @param outputType Forma de mostrar los datos (simple o full)
+     * @return ProfesorOutputDTO con los datos de los profesores
+     * @throws NotFoundException Si el ID pasado no existe
+     */
+    @GetMapping("/showAll")
+    public List<ProfesorOutputDTO> mostrarTodo(@RequestParam (name = "outputType", defaultValue = "simple")String outputType) throws Exception {
+        return obtenerProfesorPort.buscarTodos(outputType);
     }
 
-    @PostMapping("profesor/addProfesor")
-    public void addProfesor(@RequestBody Profesor p) throws Exception{
-        profesorServicio.addProfesor(p);
+    /**
+     * Método para añadir profesor a la base de datos
+     * @param profesorInputDTO Datos del profesor a añadir
+     * @return El profesor añadido
+     * @throws Exception Si el profesor a añadir no tiene datos
+     */
+    @PostMapping("/addProfesor")
+    public ProfesorOutputDTO addProfesor(@RequestBody ProfesorInputDTO profesorInputDTO) throws Exception {
+        return createProfesorPort.addProfesor(profesorInputDTO);
     }
 
-    @DeleteMapping("profesor/deleteProfesor/{id_profesor}")
-    public void deleteProfesor(@PathVariable int id_profesor){
-        profesorServicio.deleteProfesor(id_profesor);
+    /**
+     * Método que elimina un profesor de la base de datos
+     * @param id_profesor ID del profesor que queremos eliminar
+     * @throws NotFoundException si el ID introducido no existe
+     */
+    @DeleteMapping("/deleteProfesor/{id_profesor}")
+    public void deleteProfesor(@PathVariable int id_profesor) throws NotFoundException{
+        deleteProfesor.deletePorfesor(id_profesor);
+    }
+
+    /**
+     * Método que actualiza los datos de un profesor de la base de datos
+     * @param id_profesor ID del profesor que queremos modificar
+     * @param profesorInputDTO Datos a cambiar del profesor
+     * @return El profesor con sus nuevos datos
+     * @throws NotFoundException Si el ID pasado no existe
+     */
+    @PutMapping("/update/{id_profesor}")
+    public ProfesorOutputDTO updateProfesor(@PathVariable int id_profesor, @RequestBody ProfesorInputDTO profesorInputDTO) throws NotFoundException {
+        return updateProfesorPort.updatePorfesor(id_profesor, profesorInputDTO);
     }
 }
-/*
-* FALTA PONER EL ATRIBUTO PARA QUE MUESTRE O NO LOS DATOS ASOCIADOS
-* A UN DETERMINADO OBJETO COMO CON EL OBJETO ESTUDIANTE QUE MUESTRA
-* LOS DE PERSONA
-* */

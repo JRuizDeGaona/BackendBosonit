@@ -10,6 +10,4 @@ import java.util.Optional;
 @Component
 @Repository
 public interface ProfesorRepositorio extends JpaRepository<Profesor, Integer> {
-    public Optional<Profesor> findById(int id_profesor);
-    public void deleteById(int id_profesor);
 }
