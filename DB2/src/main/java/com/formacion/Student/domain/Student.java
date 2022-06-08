@@ -1,7 +1,7 @@
 package com.formacion.Student.domain;
 
 import com.formacion.Student.infraestructure.dtos.input.StudentInputDTO;
-import com.formacion.AlumnosEstudios.domain.Alumnos_Estudios;
+import com.formacion.AlumnosEstudios.domain.AlumnosEstudios;
 import com.formacion.Persona.domain.Persona;
 import com.formacion.Profesor.domain.Profesor;
 import lombok.Getter;
@@ -30,7 +30,7 @@ public class Student {
     @Column(name="branch")
     String branch;
     @OneToMany
-    List<Alumnos_Estudios> estudios;
+    List<AlumnosEstudios> estudios;
 
     public Student() {
     }
