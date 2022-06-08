@@ -1,67 +1,83 @@
 package com.formacion.Student.infraestructure.controller;
 
+import com.formacion.Student.application.port.CreateStudentPort;
+import com.formacion.Student.application.port.DeleteStudentPort;
+import com.formacion.Student.application.port.ObtenerStudentPort;
+import com.formacion.Student.application.port.UpdateStudentPort;
 import com.formacion.Student.infraestructure.dtos.input.StudentInputDTO;
-import com.formacion.Student.infraestructure.dtos.output.SimpleStudentOutputDTO;
 import com.formacion.Student.infraestructure.dtos.output.StudentOutputDTO;
 import com.formacion.Excepciones.NotFoundException;
-import com.formacion.Student.domain.Student;
-import com.formacion.Student.application.StudentServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping
+@RequestMapping("/student")
 public class ControladorStudent {
     @Autowired
-    StudentServicio studentServicio;
+    CreateStudentPort createStudentPort;
+    @Autowired
+    UpdateStudentPort updateStudentPort;
+    @Autowired
+    DeleteStudentPort deleteStudentPort;
+    @Autowired
+    ObtenerStudentPort obtenerStudentPort;
 
-    @GetMapping("student/buscarId/{id_student}")
-    public List<StudentOutputDTO> buscarId(@PathVariable int id_student, @RequestParam String outputType){
-        if(outputType==""){
-            outputType="simple";
-        }
-        if(outputType.equals("simple")){
-            Optional<Student> estudiantes = studentServicio.buscarId(id_student);
-            return (List) estudiantes.stream()
-                    .map(i -> new SimpleStudentOutputDTO((Student) i))
-                    .collect(Collectors.toList());
-        }else if(outputType.equals("full")){
-            Optional<Student> estudiantes = studentServicio.buscarId(id_student);
-
-            return (List) estudiantes.stream()
-                    .map(i -> new StudentOutputDTO((Student) i))
-                    .collect(Collectors.toList());
-        }else {
-            throw new NotFoundException("No se encuentra una solicitud con ese parámetro");
-        }
+    // -----MOSTRAR LOS ESTUDIANTES DE LA BASE DE DATOS----- //
+    /**
+     * Método que muestra una persona según su ID
+     * @param id_student ID del estudiante que queremos ver la información
+     * @param outputType Si queremos ver la información sólo del estudiante ("simple") o también de la persona asociada ("full")
+     * @return StudentOutputDTO con los datos del estudiante
+     * @throws NotFoundException Si no encunetra el ID que le hemos pasado
+     */
+    @GetMapping("/buscarId/{id_student}")
+    public StudentOutputDTO buscarPorId(@PathVariable int id_student, @RequestParam(name = "outputType", defaultValue = "simple")String outputType) throws NotFoundException {
+        return obtenerStudentPort.buscarPorId(id_student, outputType);
     }
 
-    @GetMapping("student/showAll")
-    public List<StudentOutputDTO> mostrarTodo(){
-        List<Student> estudiantes = studentServicio.mostrarTodo();
-        return (List) estudiantes.stream()
-                .map(i -> new StudentOutputDTO((Student) i))
-                .collect(Collectors.toList());
+    /**
+     * Método que te devuelve una lsita con todos los estudiantes de la base de datos
+     * @return Lista de los estudiantes
+     * @throws Exception Si la lista está vacía
+     */
+    @GetMapping("/buscarTodos")
+    public List<StudentOutputDTO> buscarTodos () throws Exception {
+        return obtenerStudentPort.buscarTodos();
     }
 
-    @PostMapping("student/addStudent")
-    public void addStudent(@RequestBody StudentInputDTO s) throws Exception{
-        //Student st = new Student();
-        System.out.println(s.toString());
-        studentServicio.addStudent(s);
+
+    // -----CRUD DE ESTUDIANTES----- //
+    /**
+     * Método para añadir un estudiante en la base de datos
+     * @param studentInputDTO Datos de estudiante a añadir
+     * @return StudentOutputDTO con los datos del estudiante
+     * @throws Exception Si el estudiante no tiene datos
+     */
+    @PostMapping("/addStudent")
+    public StudentOutputDTO addStudent(@RequestBody StudentInputDTO studentInputDTO) throws Exception {
+        return createStudentPort.addStudent(studentInputDTO);
     }
 
-    @DeleteMapping("student/deleteStudent/{id_student}")
-    public void deletePersona(@PathVariable int id_student){
-        studentServicio.delete(id_student);
+    /**
+     * Método que elimina un estudiante de la base de datos
+     * @param id_student ID del estudiante que queremos eliminar
+     * @throws NotFoundException Si el ID no existe
+     */
+    @DeleteMapping("/deleteStudent/{id_student}")
+    public void deleteStudent(@PathVariable int id_student) throws NotFoundException {
+        deleteStudentPort.deleteStudent(id_student);
     }
 
-    @PutMapping("persona/updateStudent/{id_student}")
-    public void updateStudent(@PathVariable int id_student, @RequestBody StudentInputDTO s) throws Exception{
-        studentServicio.updateStudent(id_student, s);
+    /**
+     * Método que me actualiza los cambios de los datos de un estudiante
+     * @param id_student ID del estudiante que queremos actualizar
+     * @param studentInputDTO Nuevos datos del estudiante
+     * @return StuedntOutputDTO con los nuevos datos
+     * @throws NotFoundException S i no encuentra el ID que le hemos pasado
+     */
+    @PutMapping("/updateStudent/{id_student}")
+    public StudentOutputDTO updateStudent(@PathVariable int id_student, @RequestBody StudentInputDTO studentInputDTO) throws NotFoundException {
+        return updateStudentPort.updateStudent(id_student, studentInputDTO);
     }
 }

@@ -31,7 +31,7 @@ public class ControladorPersona {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("persona/buscarNombre/{usuario}")
+    /*@GetMapping("persona/buscarNombre/{usuario}")
     public List<Persona> buscaNombre(@PathVariable String usuario){
         System.out.println("El nombre recogido en la URL es este: "+usuario);
         List<Persona> usuarios;
@@ -39,7 +39,7 @@ public class ControladorPersona {
         return (ArrayList) usuarios.stream()
                 .map(i -> new PersonaOutputDTO((Persona) i))
                 .collect(Collectors.toList());
-    }
+    }*/
     @GetMapping("persona/showAll")
     public ArrayList mostrarTodo(){
         ArrayList usuarios = personaServicio.mostrarTodo();

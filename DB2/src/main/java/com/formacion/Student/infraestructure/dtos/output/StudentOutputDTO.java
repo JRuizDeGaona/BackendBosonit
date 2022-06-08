@@ -12,24 +12,16 @@ import java.util.Optional;
 @Data
 @NoArgsConstructor
 public class StudentOutputDTO {
-    /*
-    @Autowired
-    PersonaRepositorio personaRepositorio;
-
-    @Autowired
-    ProfesorRepositorio profesorRepositorio;
-*/
-    //private Optional<Persona> persona;
+    private int id_student;
     private Persona persona;
     private Integer num_hours_week;
     private String coments;
     private Optional<Profesor> profesor;
     private String branch;
     private List estudios;
-    private StudentOutputDTO student;
 
     public StudentOutputDTO(Student student){
-        //this.persona = Optional.ofNullable(student.getPersona());
+        setId_student(student.getId_student());
         this.persona = student.getPersona();
         this.num_hours_week = student.getNum_hours_week();
         this.coments = student.getComents();

@@ -6,7 +6,6 @@ import com.formacion.Persona.domain.Persona;
 import com.formacion.Profesor.domain.Profesor;
 import lombok.Getter;
 import lombok.Setter;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -17,7 +16,7 @@ import java.util.List;
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id_student;
+    int id_student;
     @OneToOne
     @JoinColumn(name="id_persona")
     Persona persona;
@@ -33,17 +32,29 @@ public class Student {
     @OneToMany
     List<Alumnos_Estudios> estudios;
 
+    public Student() {
+    }
 
-    public Student(StudentInputDTO studentInputDTO) {
+    /**
+     * Constructor que recibe un StudentInputDTO para inicializar un estudiante
+     * @param studentInputDTO Los datos del estudiante
+     */
+    public Student (StudentInputDTO studentInputDTO) {
         setId_student(studentInputDTO.getId_student());
-        setPersona(studentInputDTO.estudiante().persona);
         setNum_hours_week(studentInputDTO.getNum_hours_week());
         setComents(studentInputDTO.getComents());
-        setProfesor(studentInputDTO.estudiante().profesor);
         setBranch(studentInputDTO.getBranch());
         setEstudios(studentInputDTO.getEstudios());
     }
 
-    public Student() {
+    /**
+     * Método para actualizar los datos del estudiante
+     * @param studentInputDTO
+     */
+    public void update(StudentInputDTO studentInputDTO) {
+        setNum_hours_week(studentInputDTO.getNum_hours_week());
+        setComents(studentInputDTO.getComents());
+        setBranch(studentInputDTO.getBranch());
+        setEstudios(studentInputDTO.getEstudios());
     }
 }

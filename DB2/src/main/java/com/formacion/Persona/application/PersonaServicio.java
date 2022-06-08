@@ -29,7 +29,7 @@ public class PersonaServicio{
         return p;
     }
 
-    public List<Persona> buscarUsuario(String usuario){
+    /*public List<Persona> buscarUsuario(String usuario){
         List<Persona> usuarios;
         usuarios = personaRepo.findByUsuario(usuario);
         if(usuarios==null){
@@ -38,7 +38,7 @@ public class PersonaServicio{
             System.out.println("Usuarios devueltos");
         }
         return usuarios;
-    }
+    }*/
 
     public void addPersona(PersonaInputDTO p)throws Exception{
         checkPersona(p);
