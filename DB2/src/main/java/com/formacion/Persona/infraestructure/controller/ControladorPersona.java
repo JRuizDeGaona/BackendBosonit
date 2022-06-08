@@ -1,67 +1,140 @@
 package com.formacion.Persona.infraestructure.controller;
 
+import com.formacion.Excepciones.NotFoundException;
+import com.formacion.Excepciones.UnprocessableEntityException;
+import com.formacion.Persona.application.port.CreatePersonaPort;
+import com.formacion.Persona.application.port.DeletePersonaPort;
+import com.formacion.Persona.application.port.ObtenerPersonaPort;
+import com.formacion.Persona.application.port.UpdatePersonaPort;
 import com.formacion.Persona.infraestructure.dtos.input.PersonaInputDTO;
 import com.formacion.Persona.infraestructure.dtos.output.PersonaOutputDTO;
-import com.formacion.Persona.domain.Persona;
-import com.formacion.Persona.application.PersonaServicio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping
-@CrossOrigin
+//@CrossOrigin
 //@CrossOrigin(origins = "http://localhost:8080", methods = {RequestMethod.GET,RequestMethod.POST})
+@RestController
+@RequestMapping("/persona")
 public class ControladorPersona {
     @Autowired
-    PersonaServicio personaServicio;
+    CreatePersonaPort createPersonaPort;
+    @Autowired
+    UpdatePersonaPort updatePersonaPort;
+    @Autowired
+    DeletePersonaPort deletePersonaPort;
+    @Autowired
+    ObtenerPersonaPort obtenerPersonaPort;
 
-    @GetMapping("persona/buscarId/{id_persona}")//hay que llamar al parametro de la url igual que la variable que se declara en la signatura del método
-    public ArrayList buscaId(@PathVariable int id_persona){
-        System.out.println("La id recogida en la URL es esta: "+id_persona);
-        ArrayList usuarios = new ArrayList();
-        Optional<Persona> p;
-        p = personaServicio.buscarId(id_persona);
-        return (ArrayList) usuarios.stream()
-                .map(i -> new PersonaOutputDTO((Persona) i))
-                .collect(Collectors.toList());
+
+    // MOSTRAR LAS PERSONAS DE LA BASE DE DATOS
+    /**
+     * Métoto que busca un usuario de la base de datos
+     * @param id_persona ID de la persona que queremos buscar en la base de datos
+     * @return Persona con el ID que hemos pasado
+     * @throws Exception Si no está el ID que hemos especificado
+     */
+    @GetMapping("/buscarId/{id_persona}")
+    public PersonaOutputDTO buscarPorId (@PathVariable int id_persona) throws NotFoundException {
+        return obtenerPersonaPort.buscarPorId(id_persona);
     }
 
-    /*@GetMapping("persona/buscarNombre/{usuario}")
-    public List<Persona> buscaNombre(@PathVariable String usuario){
-        System.out.println("El nombre recogido en la URL es este: "+usuario);
-        List<Persona> usuarios;
-        usuarios = personaServicio.buscarUsuario(usuario);
-        return (ArrayList) usuarios.stream()
-                .map(i -> new PersonaOutputDTO((Persona) i))
-                .collect(Collectors.toList());
-    }*/
-    @GetMapping("persona/showAll")
-    public ArrayList mostrarTodo(){
-        ArrayList usuarios = personaServicio.mostrarTodo();
-        return (ArrayList) usuarios.stream()
-                .map(i -> new PersonaOutputDTO((Persona) i))
-                .collect(Collectors.toList());
+    /**
+     * Métoto que busca uno o varios usuarios de la base de datos
+     * @param nombre Nombre de usuario de la persona que queremos buscar en la base de datos
+     * @return Lista con todas las personas con ese nombre de Usuario
+     * @throws Exception Si el nombre de usuario no existe
+     */
+    @GetMapping("/buscarNombre/{nombre}")
+    public List<PersonaOutputDTO> buscarPorNombre (@PathVariable String nombre) throws Exception {
+        return obtenerPersonaPort.buscarPorNombre(nombre);
+    }
+
+    /**
+     * Método que muestra los datos de todas las personas de la base de datos
+     * @return Lista con los datos de todas las personas
+     * @throws Exception Si falla algo en la peticion
+     */
+    @GetMapping("/buscarTodos")
+    public List<PersonaOutputDTO> buscarTodos () throws Exception {
+        return obtenerPersonaPort.buscarTodos();
     }
 
 //    @CrossOrigin(origins = "http://localhost:8080")
-    @PostMapping("persona/addPersona")
-    public void addPersona(@RequestBody PersonaInputDTO p) throws Exception {
-        System.out.println(p.toString());
-        personaServicio.addPersona(p);
+
+    // MÉTODOS DEL CRUD
+    /**
+     * Método para añadir personas a la base de datos
+     * @param personaInputDTO Persona que queremos añadir
+     * @return Persona que hemos añadido
+     * @throws Exception Si no cumple el formato correcto de los datos
+     */
+    @PostMapping("/addPersona")
+    public PersonaOutputDTO addPersona (@RequestBody PersonaInputDTO personaInputDTO) throws Exception {
+        checkPersona(personaInputDTO);
+        PersonaOutputDTO personaOutputDTO = createPersonaPort.addPersona(personaInputDTO);
+
+        return personaOutputDTO;
     }
 
-    @DeleteMapping("persona/deletePersona/{id_persona}")
-    public void deletePersona(@PathVariable int id_persona){
-        personaServicio.delete(id_persona);
+    /**
+     * Método para eliminar personas de la base de datos
+     * @param id_persona ID de la persona que queremos eliminar
+     * @throws Exception Si el ID pasado no existe
+     */
+    @DeleteMapping("/deletePersona/{id_persona}")
+    public void deletePersona (@PathVariable int id_persona) throws NotFoundException {
+        deletePersonaPort.deletePersona(id_persona);
     }
 
-    @PutMapping("persona/updatePersona/{id_persona}")
-    public void updatePersona(@PathVariable int id_persona, @RequestBody Optional<Persona> p) throws Exception {
-        personaServicio.updatePersona(id_persona, p);
+    /**
+     * Método para modificar la información de un usuario
+     * @param id_persona ID de la persona que queremos eliminar
+     * @param personaInputDTO Datos modificados de la persona
+     * @return Persona con los datos ya modificados
+     * @throws Exception Si el ID de la persona que hemos pasado no existe
+     */
+    @PutMapping("/updatePersona/{id_persona}")
+    public PersonaOutputDTO updatePersona (@PathVariable int id_persona, @RequestBody PersonaInputDTO personaInputDTO) throws NotFoundException {
+        checkPersona(personaInputDTO);
+        return updatePersonaPort.updatePersona(id_persona, personaInputDTO);
+    }
+
+    /**
+     * Método que nos permite comprobar todas las restricciones a la hora de meter usuarios en la base de datos
+     * @param personaInputDTO PersonaInputDTO con los datos de la persona que quermeos introducir
+     */
+    private void checkPersona(PersonaInputDTO personaInputDTO){
+        if(personaInputDTO == null){
+            throw new UnprocessableEntityException("No se puede introducir una persona sin información");
+        }
+        if (personaInputDTO.getUsuario() == null || personaInputDTO.getUsuario().isBlank()) {
+            throw new UnprocessableEntityException("El campo Usuario no puede ser nulo ni estar vacío");
+        }
+        if (personaInputDTO.getUsuario().length() > 10) {
+            throw new UnprocessableEntityException("El campo Usuario debe tener como máximo 10 caracteres de longitud");
+        }
+        if (personaInputDTO.getUsuario().length() < 6) {
+            throw new UnprocessableEntityException("El campo Usuario debe tener como mínimo 6 caracteres de longitud");
+        }
+        if (personaInputDTO.getPassword() == null || personaInputDTO.getPassword().isBlank()) {
+            throw new UnprocessableEntityException("El campo Password no puede ser nulo ni estar vacío");
+        }
+        if (personaInputDTO.getName() == null || personaInputDTO.getName().isBlank()) {
+            throw new UnprocessableEntityException("El campo nombre no puede ser nulo ni estar vacío");
+        }
+        if (personaInputDTO.getCompany_email() == null || personaInputDTO.getCompany_email().isBlank()) {
+            throw new UnprocessableEntityException("El campo Company_Email no puede ser nulo ni estar vacío");
+        }
+        if (personaInputDTO.getPersonal_email() == null || personaInputDTO.getPersonal_email().isBlank()) {
+            throw new UnprocessableEntityException("El campo Personal_Email no puede ser nulo ni estar vacío");
+        }
+        if (personaInputDTO.getCity() == null || personaInputDTO.getCity().isBlank()) {
+            throw new UnprocessableEntityException("El campo Ciudad no puede ser nulo ni estar vacío");
+        }
+        if (personaInputDTO.getCreated_date() == null) {
+            throw new UnprocessableEntityException("El campo Created-Date no puede ser nulo ni estar vacío");
+        }
     }
 }
