@@ -60,7 +60,7 @@ public class CreateEstudiosUseCase implements CreateEstudiosPort {
 
         studentRepositorio.findAll().forEach(student -> {
             if (alumnosEstudios.getStudent().getId_student() == student.getId_student()) {
-                listaAsignaturas.add(alumnosEstudios);
+                student.getEstudios().add(alumnosEstudios);
                 studentRepositorio.saveAndFlush(student);
             }
         });
