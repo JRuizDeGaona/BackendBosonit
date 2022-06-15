@@ -1,5 +1,6 @@
 package com.formacion.AlumnosEstudios.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.formacion.AlumnosEstudios.infraestructure.dto.input.AlumnosEstudiosInputDTO;
 import com.formacion.Profesor.domain.Profesor;
 import com.formacion.Student.domain.Student;

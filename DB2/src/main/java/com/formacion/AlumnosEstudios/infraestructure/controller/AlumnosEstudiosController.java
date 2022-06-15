@@ -8,7 +8,6 @@ import com.formacion.AlumnosEstudios.infraestructure.dto.input.AlumnosEstudiosIn
 import com.formacion.AlumnosEstudios.infraestructure.dto.output.AlumnosEstudiosOutputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -34,21 +33,43 @@ public class AlumnosEstudiosController {
         return createEstudiosPort.addEstudios(alumnosEstudiosInputDTO);
     }
 
+    /**
+     * Método que borra un estudio de la base de datos
+     * @param id_study ID del estudio que queremos borrar
+     */
     @DeleteMapping("/deleteEstudios/{id_study}")
     public void deleteEstudios(@PathVariable int id_study) {
         deleteEstudiosPort.deleteEstudios(id_study);
     }
 
+    /**
+     * Método que actualiza la información de unos estudios
+     * @param alumnosEstudiosInputDTO Información que queremos modificar
+     * @param id_study ID de los estudios que queremos modificar
+     * @return La información de los estudios ya modificados
+     */
     @PutMapping("/updateEstudios/{id_study}")
     public AlumnosEstudiosOutputDTO updateEstudios(@RequestBody AlumnosEstudiosInputDTO alumnosEstudiosInputDTO, @PathVariable int id_study) {
         return updateEstudiosPort.updateEstudios(id_study, alumnosEstudiosInputDTO);
     }
 
+    /**
+     * Método que devuelve un estudio según su ID
+     * @param id_study ID del estudio que queremos buscar
+     * @param outputType (full o simple) que indica la información que queremos mostrar
+     * @return El estudio con el ID que hemos especificado
+     */
     @GetMapping("/buscar/{id_study}")
     public AlumnosEstudiosOutputDTO buscarPorId (@PathVariable int id_study, @RequestParam String outputType) {
         return obtenerEstudiosPort.buscarPorId(id_study, outputType);
     }
 
+    /**
+     * Método que devuelve una Lista con todos los estudios de la base de datos
+     * @param outputType String (full o simple) que indica la información que queremos mostrar
+     * @return Lista con todas las asignaturas
+     * @throws Exception Si ocurre algun error en la ejecución o se mete algún ID no válido
+     */
     @GetMapping("/buscarTodos")
     public List<AlumnosEstudiosOutputDTO> buscarTodos (@RequestParam String outputType) throws Exception {
         return obtenerEstudiosPort.buscarTodos(outputType);

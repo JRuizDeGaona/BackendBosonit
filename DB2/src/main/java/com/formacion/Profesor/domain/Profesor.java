@@ -1,5 +1,6 @@
 package com.formacion.Profesor.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.formacion.Profesor.infraestructure.dtos.input.ProfesorInputDTO;
 import com.formacion.Persona.domain.Persona;
 import com.formacion.Student.infraestructure.dtos.input.StudentInputDTO;
@@ -8,7 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
 @Entity
 @Data
 @Table(name = "profesor")
