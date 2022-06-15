@@ -23,6 +23,12 @@ public class AlumnosEstudiosController {
     @Autowired
     ObtenerEstudiosPort obtenerEstudiosPort;
 
+    /**
+     * Método para añadir asignaturas a la base de datos
+     * @param alumnosEstudiosInputDTO Datos de la asignatura que queremos añadir
+     * @return Información de la asignatura añadida
+     * @throws Exception Si se mete una asignatura sin datos
+     */
     @PostMapping("/addEstudios")
     public AlumnosEstudiosOutputDTO addEstudios(@RequestBody AlumnosEstudiosInputDTO alumnosEstudiosInputDTO) throws Exception {
         return createEstudiosPort.addEstudios(alumnosEstudiosInputDTO);
