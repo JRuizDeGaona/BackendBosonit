@@ -14,6 +14,9 @@ import com.formacion.Student.infraestructure.repository.StudentRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class CreateEstudiosUseCase implements CreateEstudiosPort {
     @Autowired
@@ -35,6 +38,7 @@ public class CreateEstudiosUseCase implements CreateEstudiosPort {
             alumnosEstudiosRepositorio.saveAndFlush(alumnosEstudios);
             System.out.println("Estudios guardados");
         }
+        asignarEstudios(alumnosEstudios);
         return new AlumnosEstudiosOutputDTO(alumnosEstudios);
     }
 
@@ -49,5 +53,18 @@ public class CreateEstudiosUseCase implements CreateEstudiosPort {
         Student student = studentRepositorio.findById(id_student).orElseThrow(() -> new NotFoundException("ID no encontrado"));
 
         return student;
+    }
+
+    private List<AlumnosEstudios> asignarEstudios(AlumnosEstudios alumnosEstudios) {
+        List<AlumnosEstudios> listaAsignaturas = new ArrayList<>();
+
+        studentRepositorio.findAll().forEach(student -> {
+            if (alumnosEstudios.getStudent().getId_student() == student.getId_student()) {
+                listaAsignaturas.add(alumnosEstudios);
+                studentRepositorio.saveAndFlush(student);
+            }
+        });
+
+        return listaAsignaturas;
     }
 }

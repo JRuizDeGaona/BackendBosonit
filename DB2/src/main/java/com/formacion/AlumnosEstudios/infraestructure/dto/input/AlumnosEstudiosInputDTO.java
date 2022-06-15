@@ -9,9 +9,9 @@ import java.util.Date;
 
 @Data
 public class AlumnosEstudiosInputDTO {
-    int id_study;
-    int id_profesor;
-    int id_student;
+    Integer id_study;
+    Integer id_profesor;
+    Integer id_student;
     String asignatura;
     String comment;
     Date initial_date;

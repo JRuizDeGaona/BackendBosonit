@@ -1,9 +1,6 @@
 package com.formacion.AlumnosEstudios.infraestructure.controller;
 
-import com.formacion.AlumnosEstudios.application.port.CreateEstudiosPort;
-import com.formacion.AlumnosEstudios.application.port.DeleteEstudiosPort;
-import com.formacion.AlumnosEstudios.application.port.ObtenerEstudiosPort;
-import com.formacion.AlumnosEstudios.application.port.UpdateEstudiosPort;
+import com.formacion.AlumnosEstudios.application.port.*;
 import com.formacion.AlumnosEstudios.infraestructure.dto.input.AlumnosEstudiosInputDTO;
 import com.formacion.AlumnosEstudios.infraestructure.dto.output.AlumnosEstudiosOutputDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +18,8 @@ public class AlumnosEstudiosController {
     UpdateEstudiosPort updateEstudiosPort;
     @Autowired
     ObtenerEstudiosPort obtenerEstudiosPort;
+    @Autowired
+    ObtenerAsignaturasEstudiantePort obtenerAsignaturasEstudiantePort;
 
     /**
      * Método para añadir asignaturas a la base de datos
@@ -73,5 +72,10 @@ public class AlumnosEstudiosController {
     @GetMapping("/buscarTodos")
     public List<AlumnosEstudiosOutputDTO> buscarTodos (@RequestParam String outputType) throws Exception {
         return obtenerEstudiosPort.buscarTodos(outputType);
+    }
+
+    @GetMapping("/buscarEstudiante/{id_student}")
+    public List buscarAsignaturasEstudiante (@PathVariable int id_student) {
+        return obtenerAsignaturasEstudiantePort.obtenerAsignaturas(id_student);
     }
 }
