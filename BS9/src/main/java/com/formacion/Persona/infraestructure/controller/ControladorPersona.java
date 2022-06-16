@@ -2,10 +2,7 @@ package com.formacion.Persona.infraestructure.controller;
 
 import com.formacion.Excepciones.NotFoundException;
 import com.formacion.Excepciones.UnprocessableEntityException;
-import com.formacion.Persona.application.port.CreatePersonaPort;
-import com.formacion.Persona.application.port.DeletePersonaPort;
-import com.formacion.Persona.application.port.ObtenerPersonaPort;
-import com.formacion.Persona.application.port.UpdatePersonaPort;
+import com.formacion.Persona.application.port.*;
 import com.formacion.Persona.infraestructure.dtos.input.PersonaInputDTO;
 import com.formacion.Persona.infraestructure.dtos.output.PersonaOutputDTO;
 import com.formacion.Profesor.infraestructure.dtos.output.ProfesorOutputDTO;
@@ -13,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
@@ -28,6 +27,8 @@ public class ControladorPersona {
     DeletePersonaPort deletePersonaPort;
     @Autowired
     ObtenerPersonaPort obtenerPersonaPort;
+    @Autowired
+    FeignServerPort feignServerPort;
 
 
     // MOSTRAR LAS PERSONAS DE LA BASE DE DATOS
@@ -101,6 +102,7 @@ public class ControladorPersona {
         return updatePersonaPort.updatePersona(id_persona, personaInputDTO);
     }
 
+    //RestTemplate
     @GetMapping("/{id}")
     public ProfesorOutputDTO getProfesor (@PathVariable int id) {
         ResponseEntity<ProfesorOutputDTO> profesor;
@@ -110,6 +112,21 @@ public class ControladorPersona {
             return profesor.getBody();
         } else {
             throw new RuntimeException("Error en el servidor");
+        }
+    }
+
+    //Feign
+    @GetMapping("/feign/{id}")
+    ResponseEntity<ProfesorOutputDTO> getProfessorFeign(@PathVariable int id, @RequestParam String outputType) throws Exception {
+        try {
+            ResponseEntity<ProfesorOutputDTO> professorOutputDTO = feignServerPort.callServer(id, outputType);
+            return ResponseEntity.ok(professorOutputDTO.getBody());
+
+        }
+        catch(HttpClientErrorException e1) {
+            throw new Exception("Error en el Servidor");
+        } catch (RestClientException e) {
+            throw new Exception("Otro error: " + e.getMessage());
         }
     }
 
