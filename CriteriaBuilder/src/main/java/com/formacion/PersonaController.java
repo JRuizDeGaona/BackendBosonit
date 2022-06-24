@@ -3,6 +3,7 @@ package com.formacion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -72,5 +73,17 @@ public class PersonaController {
     @GetMapping("/buscarTodos")
     public List<PersonaDTO> buscarTodos() {
         return personaService.buscarTodos();
+    }
+
+    /**
+     * Método que devuelve una lista de personas según una consulta específica que depende de los perámetros que le pasa el usuario
+     * @param cond Condición de fecha (MENOR_QUE, EQUALS, MAYOR_QUE)
+     * @param min Número de resultados mínimo que queremos mostrar
+     * @param max Número de resultados máximo que queremos mostrar
+     * @return Lista de personas según la consulta que se ha ejecutado
+     */
+    @GetMapping("/multiQuery")
+    public List<Persona> multiQuery (@RequestParam HashMap<String, String> cond, @RequestParam("minimo") int min, @RequestParam("maximo") int max) {
+        return personaService.multiQuery(cond, min, max);
     }
 }
